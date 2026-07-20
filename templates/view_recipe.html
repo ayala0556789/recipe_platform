@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ recipe.title }}</title>
+    <style>
+        .variations { display: flex; gap: 15px; margin-top: 20px; flex-wrap: wrap; }
+        .variation-card { text-align: center; }
+        .variation-card img { width: 150px; height: 150px; object-fit: cover; border: 1px solid #ccc; border-radius: 8px; }
+        .main-img { width: 300px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+    <h1>{{ recipe.title }}</h1>
+    <p><strong>סוג:</strong> {{ recipe.recipe_type }}</p>
+
+    <h3>רכיבים:</h3>
+    <ul>
+        {% for ing in recipe.ingredients %}
+            <li>{{ ing.amount }} {{ ing.unit }} {{ ing.product }}</li>
+        {% endfor %}
+    </ul>
+
+    <h3>הוראות הכנה:</h3>
+    <p>{{ recipe.instructions }}</p>
+
+    <hr>
+
+    <div>
+        <h3>תמונה מקורית:</h3>
+        <img src="{{ url_for('static', filename=recipe.image_path) }}" alt="תמונה מקורית" class="main-img">
+    </div>
+
+    <h3>גלריית וריאציות (נוצר אוטומטית):</h3>
+    <div class="variations">
+        {% for path in variations %}
+            <div class="variation-card">
+                <img src="{{ url_for('static', filename=path) }}" alt="וריאציה">
+            </div>
+        {% endfor %}
+    </div>
+
+    <br><br>
+    <a href="{{ url_for('home') }}">חזרה לדף הבית</a>
+</body>
+</html>

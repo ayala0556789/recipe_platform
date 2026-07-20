@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>הרשמה למערכת</title>
+</head>
+<body>
+    <h1>הרשמה למשתמש חדש</h1>
+    <form method="POST" action="{{ url_for('register') }}">
+        <div>
+            <label>אימייל:</label>
+            <input type="email" name="email" required>
+        </div><br>
+        <div>
+            <label>סיסמה:</label>
+            <input type="password" name="password" required>
+        </div><br>
+        <div>
+            <label>תפקיד מבוקש:</label>
+            <select name="role">
+                <option value="Reader">קורא מתכונים</option>
+                <option value="Uploader">מעלה מתכונים</option>
+            </select>
+        </div><br>
+        <button type="submit">שלח הרשמה</button>
+    </form>
+    <p><a href="{{ url_for('home') }}">חזרה לדף הבית</a></p>
+</body>
+</html>

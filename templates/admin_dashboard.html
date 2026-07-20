@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>פאנל ניהול - מערכת המתכונים</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+        th, td { border: 1px solid #ccc; padding: 12px; text-align: right; }
+        th { background-color: #f4f4f4; }
+        .btn-delete { background-color: #ff4444; color: white; border: none; padding: 8px 15px; cursor: pointer; border-radius: 4px; }
+        .btn-approve { color: #28a745; text-decoration: none; font-weight: bold; border: 1px solid #28a745; padding: 5px 10px; border-radius: 4px; }
+        .recipe-item { border: 1px solid #ddd; margin-bottom: 10px; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px; }
+        hr { margin: 40px 0; border: 0; border-top: 2px solid #eee; }
+    </style>
+</head>
+<body>
+    <h1>פאנל מנהל מערכת</h1>
+
+    <section>
+        <h2>👥 בקשות אישור למשתמשים (Uploader)</h2>
+        {% if users %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>אימייל</th>
+                        <th>תפקיד</th>
+                        <th>פעולה</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.role }}</td>
+                        <td>
+                            <a href="{{ url_for('approve_user', user_id=user.id) }}" class="btn-approve">✅ אשר כמעלה מתכונים</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>אין בקשות אישור חדשות כרגע.</p>
+        {% endif %}
+    </section>
+
+    <hr>
+
+    <section>
+        <h2>📜 ניהול מתכונים קיימים</h2>
+        <div class="recipe-list">
+            {% if all_recipes %}
+                {% for r in all_recipes %}
+                    <div class="recipe-item">
+                        <div>
+                            <strong>{{ r.title }}</strong>
+                            <span style="color: #666; margin-right: 15px;">
+                                📧 הועלה ע"י: {{ r.uploader.email if r.uploader else 'משתמש לא ידוע' }}
+                            </span>
+                        </div>
+
+                        <form method="POST" action="{{ url_for('delete_recipe', recipe_id=r.id) }}">
+                            <button type="submit" class="btn-delete" onclick="return confirm('האם את בטוחה שברצונך למחוק את המתכון: {{ r.title }}?')">
+                                🗑️ מחק מתכון
+                            </button>
+                        </form>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>אין עדיין מתכונים במערכת.</p>
+            {% endif %}
+        </div>
+    </section>
+
+    <br>
+    <p>
+        <a href="{{ url_for('home') }}" style="text-decoration: none;">➡️ חזרה לדף הבית</a>
+    </p>
+</body>
+</html>
+
+
+

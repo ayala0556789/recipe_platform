@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>הוספת מתכון חדש</title>
+</head>
+<body>
+    <h3>סטטוס: מחובר כ-{{ session.get('user_role') }}</h3>
+    <h1>שתף אותנו במתכון שלך!</h1>
+
+    <form action="{{ url_for('add_recipe') }}" method="POST" enctype="multipart/form-data">
+        <label>שם המתכון:</label><br>
+        <input type="text" name="title" required><br><br>
+
+        <label>סוג המתכון:</label><br>
+        <select name="recipe_type">
+            <option value="Parve">פרווה</option>
+            <option value="Dairy">חלבי</option>
+            <option value="Meat">בשרי</option>
+        </select><br><br>
+
+        <label>הוראות הכנה:</label><br>
+        <textarea name="instructions" rows="5" cols="40" required></textarea><br><br>
+
+        <label>בחר תמונה למתכון:</label><br>
+        <input type="file" name="image" accept="image/*" required><br><br>
+
+        <div>
+            <label>רכיבים (כמות, יחידה, שם הרכיב):</label><br>
+            <p><small>לדוגמה: 2, כוסות, קמח (כל רכיב בשורה חדשה)</small></p>
+            <textarea name="ingredients_list" rows="5" cols="40" placeholder="1.5, כוס, סוכר&#10;3, יחידות, ביצים" required></textarea>
+        </div><br>
+
+        <button type="submit">העלה מתכון למערכת</button>
+    </form>
+
+    <br>
+    <a href="{{ url_for('home') }}">ביטול וחזרה לדף הבית</a>
+</body>
+</html>

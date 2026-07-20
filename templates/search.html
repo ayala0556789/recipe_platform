@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>חיפוש מתכון</title>
+</head>
+<body>
+    <h1>מה יש לך במקרר?</h1>
+    <form method="POST" action="{{ url_for('search') }}">
+        <label>הכניסי רכיבים (מופרדים בפסיקים):</label><br>
+        <input type="text" name="user_ingredients" placeholder="קמח, ביצים, סוכר" style="width: 300px;" required>
+        <button type="submit">חפש מתכון מתאים</button>
+    </form>
+
+    {% if results %}
+        <hr>
+        <h2>תוצאות חיפוש (לפי אחוזי התאמה):</h2>
+        <ul>
+        {% for item in results %}
+            <li style="margin-bottom: 10px;">
+                <strong>{{ item.recipe.title }}</strong> -
+                <span style="color: green;">{{ item.score }}% התאמה</span>
+                <a href="{{ url_for('view_recipe', recipe_id=item.recipe.id) }}">לצפייה במתכון</a>
+            </li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+
+    <p><a href="{{ url_for('home') }}">חזרה לדף הבית</a></p>
+</body>
+</html>
