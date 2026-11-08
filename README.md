@@ -1,92 +1,64 @@
-# 🍲 Recipe Platform — מערכת חכמה לשיתוף מתכונים וחיפוש לפי מלאי אישי
+# Recipe Platform — Recipe Sharing and Search by Your Ingredients
 
-פלטפורמה לשיתוף מתכונים המבוססת על **Flask** ו-**SQLAlchemy**,
-המאפשרת למשתמשים להעלות מתכונים, לחפש מתכונים לפי רכיבים זמינים,
-ולנהל הרשאות העלאה באמצעות מנהל מערכת.
+A recipe sharing platform built with Flask and SQLAlchemy. Users upload recipes, search for recipes by the ingredients they already have, and upload permissions are managed by an administrator.
 
----
+<!-- Add a screenshot or short GIF here -->
+<!-- ![Recipe Platform demo](docs/demo.gif) -->
 
-## הרעיון המרכזי
+## Key Ideas
 
-המערכת נועדה לפתור את הבעיה של "מה לבשל עם מה שיש לי במקרר",
-תוך ניהול ויזואלי חכם של התוכן:
+The app solves the "what can I cook with what's in my fridge?" problem:
 
-1. **חיפוש מבוסס Set Intersection** – אלגוריתם החיפוש אינו מסתמך רק על טקסט,
-   אלא ממיר את רשימת הרכיבים של המשתמש ושל המתכונים למבני נתונים מסוג `Set`.
-   הוא מחשב את אחוזי החפיפה ביניהם ומסנן החוצה מתכונים עם התאמה נמוכה (מתחת ל-20%).
-2. **עיבוד תמונה On-the-Fly** – במקום להסתמך על המשתמש שיעלה תמונות מותאמות,
-   המערכת משתמשת ב-Pillow (PIL) כדי לעבד אוטומטית כל תמונה שמועלית,
-   ויוצרת עבורה 3 וריאציות (שחור-לבן, סיבוב וממוזערת) לשימוש בתצוגות שונות במערכת.
+- **Set-intersection search:** instead of relying on text matching, the user's ingredients and each recipe's ingredients are converted to Python sets. The app computes the overlap percentage and filters out recipes below a 20% match.
+- **On-the-fly image processing:** every uploaded image is processed automatically with Pillow, producing three variations (grayscale, rotated, thumbnail) for use in different views.
 
----
+## Architecture
 
-## ארכיטקטורה
+- `models`: data layer (`BaseModel`, `User`, `Recipe`, `IngredientEntry`) using SQLAlchemy.
+- `controllers`: business logic (`user_controller` for registration and permissions, `recipe_controller` for search and image processing).
+- `templates`: server-rendered dynamic HTML pages (Jinja2).
+- `static`: styling and the user-uploaded images.
+- `app.py`: the entry point that defines the routes and wires everything together.
 
-* **models** – ניהול נתונים (BaseModel, User, Recipe, IngredientEntry) מול DB באמצעות SQLAlchemy.
-* **controllers** – לוגיקה עסקית (`user_controller` להרשמה והרשאות, `recipe_controller` לחיפוש ועיבוד תמונות).
-* **templates** – דפי HTML דינמיים המרונדרים בצד השרת (Jinja2).
-* **static** – הגדרות עיצוב ושמירת התמונות המועלות (`Uploads`) שנוצרו על ידי המשתמשים.
-* **app.py** – קובץ הליבה המגדיר את ה-Routes ומחבר את כל רכיבי המערכת.
+## Key Features
 
----
+- **Smart ingredient search:** the user enters available ingredients and recipes are ranked by match percentage.
+- **Recipe gallery and filtering:** browse by type (dairy / meat / pareve).
+- **Role-based access control (RBAC):** three roles: Reader (view and search), Uploader (upload recipes), Admin (full management).
+- **Approval workflow:** new users who request upload rights start with a "pending" status and can upload only after an Admin approves them.
+- **Admin panel:** approve users and delete recipes from a dedicated dashboard.
+- **Automatic image handling:** UUIDs prevent filename collisions, and design variations are created for each recipe.
 
-## פיצ'רים עיקריים
+## Tech Stack
 
-- **חיפוש חכם לפי רכיבים** – המשתמש מזין רכיבים זמינים,
-  והמערכת מדרגת מתכונים לפי ציון התאמה באחוזים.
-- **גלריית מתכונים וסינון** – תצוגה של כל המתכונים בחלוקה לסוגים (חלבי / בשרי / פרווה).
-- **ניהול הרשאות מבוסס תפקידים (RBAC)** – שלושה סוגי משתמשים:
-  `Reader` (צפייה וחיפוש), `Uploader` (העלאת מתכונים), ו-`Admin` (ניהול מלא).
-- **תהליך אישור מבוקר (Workflow)** – משתמשים חדשים המבקשים להעלות מתכונים
-  מוגדרים בסטטוס "ממתין", ורשאים להעלות תוכן רק לאחר אישור אקטיבי של ה-Admin.
-- **פאנל ניהול מרכזי** – דאשבורד ייעודי למנהל המערכת לאישור משתמשים ומחיקת מתכונים.
-- **עיבוד ויצירת תמונות אוטומטי** – שימוש ב-UUID למניעת התנגשויות שמות,
-  ויצירת וריאציות עיצוביות לכל מתכון.
-
----
-
-## טכנולוגיות
-
-| שכבה | טכנולוגיה |
+| Area | Technology |
 |---|---|
-| Backend / Web Framework | Python, Flask |
-| DB & ORM | SQLite, SQLAlchemy |
-| עיבוד תמונות | Pillow (PIL) |
-| אבטחה והצפנה | Werkzeug Security |
-| Frontend (Server-side) | Jinja2 (HTML), CSS |
-| ניהול סביבה | python-dotenv |
+| Backend / web framework | Python, Flask |
+| Database and ORM | SQLite, SQLAlchemy |
+| Image processing | Pillow (PIL) |
+| Security | Werkzeug Security |
+| Frontend (server-side) | Jinja2 (HTML), CSS |
+| Environment | python-dotenv |
 
----
+## Getting Started
 
-## הרצה מקומית
+1. Clone the project: `git clone <repository-url>` and `cd recipe_platform`.
+2. Create and activate a virtual environment: `python -m venv venv`, then `source venv/bin/activate` (or `venv\Scripts\activate` on Windows).
+3. Install dependencies: `pip install -r requirements.txt`.
+4. Create a `.env` file in the project root with: `SECRET_KEY=your_secret_key_here`.
+5. Run the app: `python app.py`. The `recipe_platform.db` database is created automatically on first run. The server runs at `http://127.0.0.1:5000`.
 
-### שרת
-1. שכפול הפרויקט: 
-   `git clone <repository-url>` ומעבר לתיקייה `cd recipe_platform`.
-2. יצירת סביבה וירטואלית והפעלתה: 
-   `python -m venv venv` 
-   ואז `source venv/bin/activate` (או `venv\Scripts\activate` ב-Windows).
-3. התקנת התלויות: 
-   `pip install -r requirements.txt`.
-4. יצירת קובץ `.env` בתיקיית השורש והגדרת משתנה הסביבה: 
-   `SECRET_KEY=your_secret_key_here`.
-5. הרצת השרת: 
-   `python app.py` (מסד הנתונים `recipe_platform.db` ייווצר אוטומטית בהרצה הראשונה). 
-   השרת ירוץ בכתובת: `http://127.0.0.1:5000`.
+## Demo Account
 
-### פרטי התחברות לבדיקה (Demo)
-כדי לבדוק את פאנל הניהול ויכולות המערכת המלאות, 
-ניתן להתחבר עם משתמש ה-Admin:
-* **אימייל:** `admin@gmail.com`
-* **סיסמה:** `123456`
+To explore the admin panel and the full feature set, log in with this **demo-only** Admin account:
 
----
+- Email: `admin@gmail.com`
+- Password: `123456`
 
-## הערות אבטחה
+## Security Notes
 
-- **הפרדת סודות** – מפתח ההצפנה (`SECRET_KEY`) מנוהל דרך קובץ `.env` 
-  שאינו עולה ל-Git (נחסם על ידי `.gitignore`).
-- **הגנה על תוכן משתמשים** – תיקיית `static/uploads/` וקובץ מסד הנתונים מוחרגים 
-  גם הם ב-`.gitignore` כדי למנוע דליפת מידע וניפוח הרפוזיטורי.
-- **הגנת נתיבים (Route Protection)** – פעולות רגישות כגון העלאה, מחיקה וניהול משתמשים 
-  דורשות אימות התחברות ובדיקת תפקיד (Role) תואם.
+- **Secrets separation:** `SECRET_KEY` is loaded from a `.env` file excluded from Git via `.gitignore`.
+- **User content protection:** `static/uploads/` and the database file are also excluded in `.gitignore` to prevent data leaks and repository bloat.
+- **Route protection:** sensitive actions (upload, delete, user management) require authentication and a matching role.
+
+
